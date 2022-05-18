@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import localUser from './utils/user'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -15,6 +16,7 @@ const App = () => {
 
     try {
       const user = await loginService.login({ username, password })
+      localUser.save(user)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -22,6 +24,20 @@ const App = () => {
       console.log('login fails', error)
     }
   }
+
+  const clickLogout = (event) => {
+    console.log(event)
+    localUser.remove()
+    setUser(null)
+  }
+
+
+  useEffect(() => {
+    const userFromLocal = localUser.get()
+    if (userFromLocal) {
+      setUser(userFromLocal)
+    }
+  }, [])
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -51,7 +67,7 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <div>
-        <strong>{user.name} logged in</strong>
+        <strong>{user.name} logged in</strong> <button onClick={clickLogout}>logout</button>
       </div>
       <br />
       {blogs.map(blog =>
