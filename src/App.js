@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import localUser from './utils/user'
@@ -14,6 +15,13 @@ const App = () => {
   const [title, setTitle] = useState("")
   const [author, setAuthor] = useState("")
   const [url, setUrl] = useState("")
+  const [noticeObj, setNoticeObj] = useState({ message: null, color: "green" })
+
+  const showNotification = (message, color) => {
+    setNoticeObj({ message, color })
+
+    setTimeout(() => setNoticeObj({ message: null }), 5000);
+  }
 
   const clickLogin = async (event) => {
     event.preventDefault()
@@ -29,6 +37,7 @@ const App = () => {
       setPassword('')
     } catch (error) {
       console.log('login fails', error)
+      showNotification(error.response.data.error, "red")
     }
   }
 
@@ -54,8 +63,14 @@ const App = () => {
       setAuthor("")
       setUrl("")
 
+      showNotification(`a new blog You're NOT gonna neet it! by added ${user.name}`, "green")
     } catch (error) {
       console.log('create a new blog fails', error.response.data.error)
+
+      if (error.response.status === 401) {
+        clickLogout()
+      }
+
     }
   }
 
@@ -78,6 +93,9 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
+
+        <Notification message={noticeObj.message} color={noticeObj.color} />
+
         <form onSubmit={clickLogin}>
           <div>
             username<input type="text" value={username} onChange={({ target }) => setUsername(target.value)} />
@@ -92,9 +110,13 @@ const App = () => {
     )
   }
 
+
   return (
     <div>
       <h2>blogs</h2>
+
+      <Notification message={noticeObj.message} color={noticeObj.color} />
+
       <div>
         <strong>{user.name} logged in</strong> <button onClick={clickLogout}>logout</button>
       </div>
