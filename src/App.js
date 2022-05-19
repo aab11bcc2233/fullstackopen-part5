@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
+import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import localUser from './utils/user'
@@ -11,11 +13,9 @@ const App = () => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [user, setUser] = useState(null)
-
-  const [title, setTitle] = useState("")
-  const [author, setAuthor] = useState("")
-  const [url, setUrl] = useState("")
   const [noticeObj, setNoticeObj] = useState({ message: null, color: "green" })
+
+  const blogFormRef = useRef()
 
   const showNotification = (message, color) => {
     setNoticeObj({ message, color })
@@ -48,29 +48,16 @@ const App = () => {
     setUser(null)
   }
 
-  const clickCreateBlog = async (event) => {
-    event.preventDefault()
+  const onCreateBlogSuccess = (data) => {
+    showNotification(`a new blog You're NOT gonna neet it! by added ${user.name}`, "green")
+    setBlogs(blogs.concat(data))
+    blogFormRef.current.toggleVisibility()
+  }
 
-    try {
-      const data = await blogService.create({
-        title: title,
-        author: author,
-        url: url
-      })
-      console.log("create a new blog succeed", data)
-
-      setTitle("")
-      setAuthor("")
-      setUrl("")
-
-      showNotification(`a new blog You're NOT gonna neet it! by added ${user.name}`, "green")
-    } catch (error) {
-      console.log('create a new blog fails', error.response.data.error)
-
-      if (error.response.status === 401) {
-        clickLogout()
-      }
-
+  const onCreateBlogError = (error) => {
+    if (error.response.status === 401) {
+      clickLogout()
+      showNotification(`You need to log in again`, "red")
     }
   }
 
@@ -121,23 +108,10 @@ const App = () => {
         <strong>{user.name} logged in</strong> <button onClick={clickLogout}>logout</button>
       </div>
       <br />
-      <h2>create new</h2>
-      <div>
-        <form onSubmit={clickCreateBlog}>
-          <div>
-            title:<input type="text" value={title} onChange={({ target }) => setTitle(target.value)} />
-          </div>
 
-          <div>
-            author:<input type="text" value={author} onChange={({ target }) => setAuthor(target.value)} />
-          </div>
-
-          <div>
-            url:<input type="text" value={url} onChange={({ target }) => setUrl(target.value)} />
-          </div>
-          <button type="submit">create</button>
-        </form>
-      </div>
+      <Togglable buttonLabel="new note" ref={blogFormRef}>
+        <BlogForm onSuccess={onCreateBlogSuccess} onError={onCreateBlogError} />
+      </Togglable>
 
       {
         blogs.map(blog =>
