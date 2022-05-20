@@ -61,6 +61,32 @@ const App = () => {
     }
   }
 
+  const onClickLike = async (blog) => {
+    try {
+      const newBlog = {
+        ...blog,
+        likes: blog.likes + 1
+      }
+      const data = await blogService.update(newBlog)
+      console.log("add like succeed", data)
+      setBlogs(
+        blogs.map(v => {
+          if (v.id === data.id) {
+            v.likes = data.likes
+          }
+          return v
+        })
+        .sort((a, b) => b.likes - a.likes)
+      )
+    } catch (error) {
+      console.log("add like error", error)
+      if (error.response.status === 401) {
+        clickLogout()
+        showNotification(`You need to log in again`, "red")
+      }
+    }
+  }
+
 
   useEffect(() => {
     const userFromLocal = localUser.get()
@@ -71,9 +97,10 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
+    blogService.getAll().then(blogs => {
+      blogs.sort((a, b) => b.likes - a.likes)
       setBlogs(blogs)
-    )
+    })
   }, [])
 
   if (user === null) {
@@ -115,7 +142,7 @@ const App = () => {
 
       {
         blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} onClickLike={onClickLike} />
         )
       }
     </div >
