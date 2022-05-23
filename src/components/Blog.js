@@ -1,4 +1,4 @@
-import { useState } from "react"
+import React, { useState } from 'react'
 
 const Blog = ({ blog, onClickLike, isShowRemove, onClickRemove }) => {
   const blogStyle = {
@@ -15,16 +15,16 @@ const Blog = ({ blog, onClickLike, isShowRemove, onClickRemove }) => {
 
 
   const displayStyle = {
-    display: viewAll ? "" : "none"
+    display: viewAll ? '' : 'none'
   }
 
   const removeBtnDisplayStyle = {
-    display: isShowRemove ? "" : "none"
+    display: isShowRemove ? '' : 'none'
   }
 
   return (
     <div style={blogStyle}>
-      <div>{blog.title} <button onClick={toggleViewAll}>{viewAll ? "hide" : "view"}</button></div>
+      <div>{blog.title} <button onClick={toggleViewAll}>{viewAll ? 'hide' : 'view'}</button></div>
 
       <div style={displayStyle}>
         <div>{blog.url}</div>

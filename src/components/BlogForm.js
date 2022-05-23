@@ -1,11 +1,11 @@
-import React, { useState } from "react"
-import blogService from "../services/blogs"
+import React, { useState } from 'react'
+import blogService from '../services/blogs'
 
 const BlogForm = ({ onSuccess, onError }) => {
 
-  const [title, setTitle] = useState("")
-  const [author, setAuthor] = useState("")
-  const [url, setUrl] = useState("")
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
 
   const clickCreateBlog = async (event) => {
@@ -17,11 +17,11 @@ const BlogForm = ({ onSuccess, onError }) => {
         author: author,
         url: url
       })
-      console.log("create a new blog succeed", data)
+      console.log('create a new blog succeed', data)
 
-      setTitle("")
-      setAuthor("")
-      setUrl("")
+      setTitle('')
+      setAuthor('')
+      setUrl('')
 
       onSuccess(data)
     } catch (error) {

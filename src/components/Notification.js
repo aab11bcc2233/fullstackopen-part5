@@ -1,4 +1,4 @@
-import React from "react"
+import React from 'react'
 
 
 const Notification = ({ message, color }) => {
@@ -7,13 +7,13 @@ const Notification = ({ message, color }) => {
   }
 
   const noticeStyle = {
-    "background": "lightgray",
-    "border": "0.25rem solid",
-    "borderRadius": "4px",
-    "padding": "1em",
-    "color": color,
-    "fontSize": "larger",
-    "margin": "1em 0"
+    'background': 'lightgray',
+    'border': '0.25rem solid',
+    'borderRadius': '4px',
+    'padding': '1em',
+    'color': color,
+    'fontSize': 'larger',
+    'margin': '1em 0'
   }
 
   return (

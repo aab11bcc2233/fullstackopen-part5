@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
@@ -10,22 +10,22 @@ import localUser from './utils/user'
 const App = () => {
   const [blogs, setBlogs] = useState([])
 
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [noticeObj, setNoticeObj] = useState({ message: null, color: "green" })
+  const [noticeObj, setNoticeObj] = useState({ message: null, color: 'green' })
 
   const blogFormRef = useRef()
 
   const showNotification = (message, color) => {
     setNoticeObj({ message, color })
 
-    setTimeout(() => setNoticeObj({ message: null }), 5000);
+    setTimeout(() => setNoticeObj({ message: null }), 5000)
   }
 
   const clickLogin = async (event) => {
     event.preventDefault()
-    console.log("login in with", username, password)
+    console.log('login in with', username, password)
 
     try {
       const user = await loginService.login({ username, password })
@@ -37,7 +37,7 @@ const App = () => {
       setPassword('')
     } catch (error) {
       console.log('login fails', error)
-      showNotification(error.response.data.error, "red")
+      showNotification(error.response.data.error, 'red')
     }
   }
 
@@ -49,7 +49,7 @@ const App = () => {
   }
 
   const onCreateBlogSuccess = (data) => {
-    showNotification(`a new blog ${data.title}! by added ${user.name}`, "green")
+    showNotification(`a new blog ${data.title}! by added ${user.name}`, 'green')
     setBlogs(blogs.concat(data))
     blogFormRef.current.toggleVisibility()
   }
@@ -57,7 +57,7 @@ const App = () => {
   const onCreateBlogError = (error) => {
     if (error.response.status === 401) {
       clickLogout()
-      showNotification(`You need to log in again`, "red")
+      showNotification('You need to log in again', 'red')
     }
   }
 
@@ -68,7 +68,7 @@ const App = () => {
         likes: blog.likes + 1
       }
       const data = await blogService.update(newBlog)
-      console.log("add like succeed", data)
+      console.log('add like succeed', data)
       setBlogs(
         blogs.map(v => {
           if (v.id === data.id) {
@@ -79,10 +79,10 @@ const App = () => {
           .sort((a, b) => b.likes - a.likes)
       )
     } catch (error) {
-      console.log("add like error", error)
+      console.log('add like error', error)
       if (error.response.status === 401) {
         clickLogout()
-        showNotification(`You need to log in again`, "red")
+        showNotification('You need to log in again', 'red')
       }
     }
   }
@@ -91,16 +91,16 @@ const App = () => {
     if (window.confirm(`Remove blog ${blog.title}! by ${user.username}`)) {
       try {
         await blogService.deleteById(blog.id)
-        console.log("remove blog succeed")
+        console.log('remove blog succeed')
         setBlogs(
           blogs.filter(v => v.id !== blog.id)
             .sort((a, b) => b.likes - a.likes)
         )
       } catch (error) {
-        console.log("remove blog error", error)
+        console.log('remove blog error', error)
         if (error.response.status === 401) {
           clickLogout()
-          showNotification(`You need to log in again`, "red")
+          showNotification('You need to log in again', 'red')
         }
       }
     }
