@@ -49,7 +49,7 @@ const App = () => {
   }
 
   const onCreateBlogSuccess = (data) => {
-    showNotification(`a new blog You're NOT gonna neet it! by added ${user.name}`, "green")
+    showNotification(`a new blog ${data.title}! by added ${user.name}`, "green")
     setBlogs(blogs.concat(data))
     blogFormRef.current.toggleVisibility()
   }
@@ -76,7 +76,7 @@ const App = () => {
           }
           return v
         })
-        .sort((a, b) => b.likes - a.likes)
+          .sort((a, b) => b.likes - a.likes)
       )
     } catch (error) {
       console.log("add like error", error)
@@ -86,6 +86,26 @@ const App = () => {
       }
     }
   }
+
+  const onClickRemove = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title}! by ${user.username}`)) {
+      try {
+        await blogService.deleteById(blog.id)
+        console.log("remove blog succeed")
+        setBlogs(
+          blogs.filter(v => v.id !== blog.id)
+            .sort((a, b) => b.likes - a.likes)
+        )
+      } catch (error) {
+        console.log("remove blog error", error)
+        if (error.response.status === 401) {
+          clickLogout()
+          showNotification(`You need to log in again`, "red")
+        }
+      }
+    }
+  }
+
 
 
   useEffect(() => {
@@ -142,7 +162,13 @@ const App = () => {
 
       {
         blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} onClickLike={onClickLike} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            onClickLike={onClickLike}
+            isShowRemove={blog.user.username === user.username}
+            onClickRemove={onClickRemove}
+          />
         )
       }
     </div >

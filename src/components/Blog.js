@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-const Blog = ({ blog, onClickLike }) => {
+const Blog = ({ blog, onClickLike, isShowRemove, onClickRemove }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -18,6 +18,10 @@ const Blog = ({ blog, onClickLike }) => {
     display: viewAll ? "" : "none"
   }
 
+  const removeBtnDisplayStyle = {
+    display: isShowRemove ? "" : "none"
+  }
+
   return (
     <div style={blogStyle}>
       <div>{blog.title} <button onClick={toggleViewAll}>{viewAll ? "hide" : "view"}</button></div>
@@ -26,6 +30,7 @@ const Blog = ({ blog, onClickLike }) => {
         <div>{blog.url}</div>
         <div>likes {blog.likes} <button onClick={() => { onClickLike(blog) }}>like</button></div>
         <div>{blog.author}</div>
+        <button style={removeBtnDisplayStyle} onClick={() => onClickRemove(blog)}>remove</button>
       </div>
     </div>
   )
