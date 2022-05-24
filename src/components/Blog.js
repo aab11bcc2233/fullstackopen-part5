@@ -24,11 +24,11 @@ const Blog = ({ blog, onClickLike, isShowRemove, onClickRemove }) => {
 
   return (
     <div style={blogStyle}>
-      <div>{blog.title} <button onClick={toggleViewAll}>{viewAll ? 'hide' : 'view'}</button></div>
+      <div>{blog.title} {blog.author} <button className='viewAll' onClick={toggleViewAll}>{viewAll ? 'hide' : 'view'}</button></div>
 
-      <div style={displayStyle}>
-        <div>{blog.url}</div>
-        <div>likes {blog.likes} <button onClick={() => { onClickLike(blog) }}>like</button></div>
+      <div className='blogDetail' style={displayStyle}>
+        <div className='blogUrl'>{blog.url}</div>
+        <div className='blogLikes'>likes {blog.likes} <button onClick={() => { onClickLike(blog) }}>like</button></div>
         <div>{blog.author}</div>
         <button style={removeBtnDisplayStyle} onClick={() => onClickRemove(blog)}>remove</button>
       </div>
