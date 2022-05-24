@@ -6,6 +6,7 @@ import Blog from './Blog'
 
 describe('renders blog', () => {
   let component
+  const mockOnClickLikeHandler = jest.fn()
 
   const blog = {
     'title': 'mytitle5',
@@ -22,7 +23,7 @@ describe('renders blog', () => {
 
   beforeEach(() => {
     component = render(
-      <Blog blog={blog} />
+      <Blog blog={blog} onClickLike={mockOnClickLikeHandler} />
     )
   })
 
@@ -46,6 +47,20 @@ describe('renders blog', () => {
 
     const divLikes = component.container.querySelector('.blogLikes')
     expect(divLikes).toHaveTextContent(blog.likes)
+  })
+
+  test('click likes twice', () => {
+    const buttonViewAll = component.container.querySelector('.viewAll')
+    fireEvent.click(buttonViewAll)
+
+    const div = component.container.querySelector('.blogDetail')
+    expect(div).not.toHaveStyle('display: none')
+
+    const buttonLikes = component.container.querySelector('.btnLikes')
+    fireEvent.click(buttonLikes)
+    fireEvent.click(buttonLikes)
+
+    expect(mockOnClickLikeHandler.mock.calls).toHaveLength(2)
   })
 })
 
