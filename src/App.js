@@ -23,6 +23,15 @@ const App = () => {
     setTimeout(() => setNoticeObj({ message: null }), 5000)
   }
 
+  const onRequestError = (error) => {
+    if (error.response.status === 401) {
+      clickLogout()
+      showNotification('You need to log in again', 'red')
+    } else {
+      showNotification(error.response.data.error, 'red')
+    }
+  }
+
   const clickLogin = async (event) => {
     event.preventDefault()
     console.log('login in with', username, password)
@@ -48,18 +57,21 @@ const App = () => {
     setUser(null)
   }
 
-  const onCreateBlogSuccess = (data) => {
-    showNotification(`a new blog ${data.title}! by added ${user.name}`, 'green')
-    setBlogs(blogs.concat(data))
-    blogFormRef.current.toggleVisibility()
-  }
+  const requestCreateBlog = async (newBlog) => {
+    try {
+      const data = await blogService.create(newBlog)
+      showNotification(`a new blog ${data.title}! by added ${user.name}`, 'green')
+      setBlogs(blogs.concat(data))
+      blogFormRef.current.toggleVisibility()
+      return data
+    } catch (error) {
+      onRequestError(error)
 
-  const onCreateBlogError = (error) => {
-    if (error.response.status === 401) {
-      clickLogout()
-      showNotification('You need to log in again', 'red')
+      return error.response.data
     }
   }
+
+
 
   const onClickLike = async (blog) => {
     try {
@@ -80,10 +92,7 @@ const App = () => {
       )
     } catch (error) {
       console.log('add like error', error)
-      if (error.response.status === 401) {
-        clickLogout()
-        showNotification('You need to log in again', 'red')
-      }
+      onRequestError(error)
     }
   }
 
@@ -98,10 +107,7 @@ const App = () => {
         )
       } catch (error) {
         console.log('remove blog error', error)
-        if (error.response.status === 401) {
-          clickLogout()
-          showNotification('You need to log in again', 'red')
-        }
+        onRequestError(error)
       }
     }
   }
@@ -157,7 +163,7 @@ const App = () => {
       <br />
 
       <Togglable buttonLabel="new note" ref={blogFormRef}>
-        <BlogForm onSuccess={onCreateBlogSuccess} onError={onCreateBlogError} />
+        <BlogForm requestCreateBlog={requestCreateBlog} />
       </Togglable>
 
       {
@@ -176,3 +182,4 @@ const App = () => {
 }
 
 export default App
+
