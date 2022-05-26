@@ -30,7 +30,7 @@ const Blog = ({ blog, onClickLike, isShowRemove, onClickRemove }) => {
         <div className='blogUrl'>{blog.url}</div>
         <div className='blogLikes'>likes {blog.likes} <button className='btnLikes' onClick={() => { onClickLike(blog) }}>like</button></div>
         <div>{blog.author}</div>
-        <button style={removeBtnDisplayStyle} onClick={() => onClickRemove(blog)}>remove</button>
+        <button className='btn-delete-blog' style={removeBtnDisplayStyle} onClick={() => onClickRemove(blog)}>remove</button>
       </div>
     </div>
   )
