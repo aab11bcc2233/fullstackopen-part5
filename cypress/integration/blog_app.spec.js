@@ -106,5 +106,41 @@ describe('Blog app', function () {
         cy.get('.btn-delete-blog').should('have.css', 'display', 'none')
       })
     })
+
+    it.only('Sort by likes in descending order', function () {
+      const secondBlog = {
+        ...firstBlog,
+        title: firstBlog.title + '123445',
+        url: 'xxx.io',
+        likes: 0
+      }
+      cy.createBlog(secondBlog)
+
+
+      const blogs = [firstBlog, secondBlog]
+      blogs.sort(function (a, b) {
+        return b.likes - a.likes
+      })
+
+      cy.visit('http://localhost:3000')
+      cy.get('.viewAll').click({ multiple: true })
+
+      cy.get('.blog-item').eq(0).should('contain', blogs[0].title)
+      cy.get('.blog-item').eq(1).should('contain', blogs[1].title)
+
+
+      blogs[1].likes = blogs[1].likes + 1
+      cy.get('.btnLikes').eq(1).click()
+      blogs.sort(function (a, b) {
+        return b.likes - a.likes
+      })
+
+
+      cy.wait(1000)
+
+      cy.get('.blog-item').eq(0).should('contain', blogs[0].title)
+      cy.get('.blog-item').eq(1).should('contain', blogs[1].title)
+    })
   })
+
 })
