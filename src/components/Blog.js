@@ -23,7 +23,7 @@ const Blog = ({ blog, onClickLike, isShowRemove, onClickRemove }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div className='blog-item' style={blogStyle}>
       <div>{blog.title} {blog.author} <button className='viewAll' onClick={toggleViewAll}>{viewAll ? 'hide' : 'view'}</button></div>
 
       <div className='blogDetail' style={displayStyle}>
