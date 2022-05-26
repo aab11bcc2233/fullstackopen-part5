@@ -1,6 +1,5 @@
 /// <reference types="Cypress" />
 
-
 describe('Blog app', function () {
   const user = {
     username: 'bird',
@@ -45,8 +44,17 @@ describe('Blog app', function () {
   })
 
   describe('When logged in', function () {
+
+    const firstBlog = {
+      title: 'my title 200',
+      author: user.name,
+      url: 'xxx.example.org',
+      likes: 0
+    }
+
     beforeEach(function () {
       cy.login(user)
+      cy.createBlog(firstBlog)
     })
 
     it('A blog can be created', function () {
@@ -68,5 +76,13 @@ describe('Blog app', function () {
       cy.get('.blog-item').should('contain', `${blog.title} ${blog.author}`)
       cy.get('.viewAll').should('contain', 'view')
     })
+
+    it('A blog can be liked', function () {
+      cy.get('.viewAll').click()
+      cy.get('.btnLikes').click()
+
+      cy.contains(`likes ${firstBlog.likes + 1}`)
+    })
+
   })
 })
